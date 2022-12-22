@@ -27,7 +27,7 @@ for file in files:
     file_obj.columns = [NALOG_NA_PRIBOL]
     merge_files_nalog_na_pribol = pd.concat([merge_files_nalog_na_pribol, file_obj])
 
-# Слияние всех листов №1
+# Слияние всех листов №2
 merge_files_nds = pd.DataFrame()
 
 for file in files:
@@ -40,7 +40,7 @@ for file in files:
     file_obj.columns = [NDS]
     merge_files_nds = pd.concat([merge_files_nds, file_obj])
 
-# Слияние всех листов №1
+# Слияние всех листов №3
 merge_files_nds_import_tc = pd.DataFrame()
 
 for file in files:
