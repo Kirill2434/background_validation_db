@@ -1,10 +1,7 @@
-from PostgreSQL_managment import create_table_db
+from PostgreSQL_managment import check_connection_db, create_table_db, insert_data_db
 
 
-def main_manager(argument):
-    create = create_table_db
-    if argument == 'Создать':
-        return create
-    elif argument == 'Наполнить':
-        pass
+print(check_connection_db)
+# print(create_table_db)
+# print(insert_data_db)
 

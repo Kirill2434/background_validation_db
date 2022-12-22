@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/background_validation_db.iml" filepath="$PROJECT_DIR$/.idea/background_validation_db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Data_analysis.iml" filepath="$PROJECT_DIR$/.idea/Data_analysis.iml" />
     </modules>
   </component>
 </project>
