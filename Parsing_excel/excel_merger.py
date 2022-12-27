@@ -24,12 +24,12 @@ files_nnn = glob.glob('???.xlsx')
 files_nnnn_nnn = glob.glob('99??????.xlsx')
 
 # Подсчет обрабатываемых файлов в рабочей папке
-print(f"В папке {main_folder} хранится {len(list(all_files))} объектов в формате .xlsx")
+# print(f"В папке {main_folder} хранится {len(list(all_files))} объектов в формате .xlsx")
 
 
 files_list = [files_nn, files_nnn, files_nnnn_nnn]
 
-# Проверка кол-ва листов в книге
+# Проверка листов в книге по образцу
 incoorect_list_of_files = []
 correct_list_of_files_17 = []
 correct_list_of_files_18 = []
