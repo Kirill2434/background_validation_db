@@ -1,4 +1,5 @@
 import os
+from pathlib import PureWindowsPath
 
 import pandas as pd
 import glob
@@ -10,10 +11,15 @@ NDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 NDS_IMPORT_TC = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 shtraf_119_NK_RF = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
 
-FILE_NAME = 'C:\source_data\common_data_file_2.xlsx'
-FILE_NAME_shtraf_119_NK_RF = 'C:\source_data\common_data_shtraf_119_NK_RF_file_2.csv'
+FILE_NAME = 'C:\source_data\common_data_file.xlsx'
+FILE_NAME_shtraf_119_NK_RF = 'C:\source_data\common_data_shtraf_119_NK_RF_file.csv'
 
+main_folder = PureWindowsPath('C:\source_data')
 main_dir = os.chdir('C:\source_data')
+
+# Подсчет обрабатываемых файлов в рабочей папке
+print(f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx")
+
 
 files_nn_122 = glob.glob('???122.xlsx')
 files_nn = glob.glob('??.xlsx')
@@ -82,35 +88,27 @@ if files_nn_122:
     except Exception as error:
         print(f'Ошибка при выполнении слияния: {error}')
 
-# if files_nn or files_nnn or files_nnnn_nnn:
-    # Слияние всех листов для файлов с штрафами
 
-
-def merge_files(dir_file):
+def merge_large_files():
+    """Функция слияния крупных файлов в фомат csv"""
     merge_files_shtraf_119_NK_RF_list = []
     try:
-        for file in tqdm(dir_file, desc='Начало слияния листа (штраф 119 НК РФ)'):
-            file_obj_1 = pd.read_excel(file,
-                                       skiprows=7,
-                                       usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-                                       )
-            file_obj_1.columns = [shtraf_119_NK_RF]
-            file_obj_1['Файл источник'] = file
-            merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
-            # for file_2 in tqdm(files_nnnn_nnn, desc='Начало слияния листа (штраф 119 НК РФ nnnn_nnn)'):
-            #     file_obj_2 = pd.read_excel(file_2,
-            #                                skiprows=7,
-            #                                usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-            #                                )
-            #     file_obj_2.columns = [shtraf_119_NK_RF]
-            #     file_obj_2['Файл источник'] = file_2
-            #     merge_files_shtraf_119_NK_RF_list.append(file_obj_2)
-        merge_files_shtraf_119_NK_RF_merge = pd.concat(merge_files_shtraf_119_NK_RF_list)
-        tqdm.write('Слияние файлов прошло успешно!')
-        return merge_files_shtraf_119_NK_RF_merge
+        for dir_file in files_list:
+            for file in tqdm(dir_file, desc='Начало слияния листа (штраф 119 НК РФ)'):
+                file_obj_1 = pd.read_excel(file,
+                                           skiprows=7,
+                                           usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                                           )
+                file_obj_1.columns = [shtraf_119_NK_RF]
+                file_obj_1['Файл источник'] = file
+                merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
+        return merge_files_shtraf_119_NK_RF_list
     except Exception as error:
         print(f'Ну мы пытались, но чет пошло не так... {error}')
 
 
-for dir in files_list:
-    print(merge_files(dir).to_csv(FILE_NAME_shtraf_119_NK_RF, sep=',', encoding='cp1251'))
+merge_files_shtraf_119_NK_RF = pd.concat(merge_large_files())
+print(merge_files_shtraf_119_NK_RF.to_csv(FILE_NAME_shtraf_119_NK_RF, sep=',', encoding='cp1251'))
+
+# Финальный подсчет обрабатываемых файлов в рабочей папке
+print(f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx")
