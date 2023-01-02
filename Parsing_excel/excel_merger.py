@@ -1,4 +1,3 @@
-import os
 import glob
 from pathlib import Path
 
@@ -6,12 +5,12 @@ import pandas as pd
 
 from tqdm import tqdm
 
-from Parsing_excel.config import (files_nn, files_nnn, files_nnnn_nnn, NALOG_NA_PRIBOL, NDS,
-                                  NDS_IMPORT_TC, FILE_NAME, shtraf_119_NK_RF, FILE_NAME_shtraf_119_NK_RF, main_folder)
+from source.config import (files_nn, files_nnn, files_nnnn_nnn, NALOG_NA_PRIBOL, NDS,
+                           NDS_IMPORT_TC, FILE_NAME, shtraf_119_NK_RF, FILE_NAME_shtraf_119_NK_RF, main_folder)
 
 
 def check_lists(arg):
-    """Проверка листов в книге по образцу"""
+    """Проверка листов в книге по образцу и вывод отчета в файл Excel"""
 
     incoorect_list_of_files = []
     correct_list_of_files_17 = []
@@ -115,7 +114,7 @@ def merge_large_files():
         merge_files_shtraf_119_NK_RF = pd.concat(merge_files_shtraf_119_NK_RF_list)
         return merge_files_shtraf_119_NK_RF.to_csv(FILE_NAME_shtraf_119_NK_RF, sep=',', encoding='cp1251')
     except Exception as error:
-        print(f'Ну мы пытались, но что-то пошло не так... {error}')
+        print(f'Ошибка при выполнении слияния: {error}')
 
 
 def count_files():
