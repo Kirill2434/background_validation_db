@@ -6,8 +6,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from source.config import (files_nn, files_nnn, files_nnnn_nnn, NALOG_NA_PRIBOL, NDS,
-                           NDS_IMPORT_TC, FILE_NAME, shtraf_119_NK_RF, FILE_NAME_shtraf_119_NK_RF, main_folder)
-
+                           NDS_IMPORT_TC, FILE_NAME, shtraf_119_NK_RF, FILE_NAME_shtraf_119_NK_RF,
+                           main_folder)
 
 def check_lists(arg):
     """Проверка листов в книге по образцу и вывод отчета в файл Excel"""
@@ -31,12 +31,12 @@ def check_lists(arg):
 
         for col in incoorect_list_of_files:
             df = pd.DataFrame(col)
-        df.to_excel('output.xlsx')
-        return df
+            df.to_excel('output.xlsx')
+            return df
 
     # return (f'Файлов с ошибкой: {len(incoorect_list_of_files)}\n список файлов: {incoorect_list_of_files}\n'
     #         f'Корректных файлов п.17: {len(correct_list_of_files_17)}\n список файлов: {correct_list_of_files_17}\n'
-    #         f'Корректных файлов п.17: {len(correct_list_of_files_18)}\n список файлов: {correct_list_of_files_18}\n')
+    #         f'Корректных файлов п.18: {len(correct_list_of_files_18)}\n список файлов: {correct_list_of_files_18}\n')
 
 
 def merge_small_files(arg):
@@ -50,24 +50,22 @@ def merge_small_files(arg):
             sheet = pd.ExcelFile(arg[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
-                                     skiprows=7,
-                                     usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
-                                     sheet_name=sheet[0])
-            file_obj.columns = [NALOG_NA_PRIBOL]
-            file_obj['Файл источник'] = file
+                                     header=7,
+                                     sheet_name=sheet[0]
+                                     )
+            file_obj.insert(23, 'Файл источник', file)
             merge_files_nalog_list.append(file_obj)
-        merge_files_nalog_na_pribol_merge = pd.concat(merge_files_nalog_list)
+        merge_files_nalog_na_pribol_merge = pd.concat(merge_files_nalog_list, ignore_index=False)
 
         # Слияние всех листов №2
         for file in tqdm(arg, desc='Начало слияния листа (НДС)'):
             sheet = pd.ExcelFile(arg[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
-                                     skiprows=7,
-                                     usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-                                     sheet_name=sheet[1])
-            file_obj.columns = [NDS]
-            file_obj['Файл источник'] = file
+                                     header=7,
+                                     sheet_name=sheet[1]
+                                     )
+            file_obj.insert(21, 'Файл источник', file)
             merge_files_nds_list.append(file_obj)
         merge_files_nds_merge = pd.concat(merge_files_nds_list)
 
@@ -76,11 +74,10 @@ def merge_small_files(arg):
             sheet = pd.ExcelFile(arg[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
-                                     skiprows=7,
-                                     usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-                                     sheet_name=sheet[2])
-            file_obj.columns = [NDS_IMPORT_TC]
-            file_obj['Файл источник'] = file
+                                     header=7,
+                                     sheet_name=sheet[2]
+                                     )
+            file_obj.insert(21, 'Файл источник', file)
             merge_files_nds_import_tc_list.append(file_obj)
         merge_files_nds_import_tc_merge = pd.concat(merge_files_nds_import_tc_list)
 
@@ -91,7 +88,7 @@ def merge_small_files(arg):
 
         writer = pd.ExcelWriter(FILE_NAME, engine='openpyxl')
         for sheet_name in MERGE_FILES.keys():
-            MERGE_FILES[sheet_name].to_excel(writer, sheet_name=sheet_name)
+            MERGE_FILES[sheet_name].to_excel(writer, sheet_name=sheet_name, index=False)
         return writer.close()
     except Exception as error:
         print(f'Ошибка при выполнении слияния: {error}')
@@ -105,7 +102,7 @@ def merge_large_files():
         for dir_file in files_list:
             for file in tqdm(dir_file, desc='Начало слияния листа (штраф 119 НК РФ)'):
                 file_obj_1 = pd.read_excel(file,
-                                           skiprows=7,
+                                           skiprows=SK,
                                            usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
                                            )
                 file_obj_1.columns = [shtraf_119_NK_RF]
@@ -119,4 +116,4 @@ def merge_large_files():
 
 def count_files():
     """Финальный подсчет обрабатываемых файлов в рабочей папке. """
-    return f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx"
+    print(f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx")

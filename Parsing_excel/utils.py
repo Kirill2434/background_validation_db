@@ -15,3 +15,6 @@ files = glob.glob('*.xlsx')
 sheet = pd.ExcelFile(files[0])
 print(sheet)
 
+
+def count_empty_rows():
+    pass

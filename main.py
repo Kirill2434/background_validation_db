@@ -7,7 +7,6 @@ from source.custom_exceptions import EmptyException
 
 def check_directory():
     """Проверка директории "С:\" на наличие папок source_data и generation_results. """
-    os.chdir('C:/')
     directory_list = ['C:\source_data', 'C:\generation_results']
 
     for directory in directory_list:
@@ -60,9 +59,9 @@ if __name__ == '__main__':
     check_source_data()
     check_generation_results()
     print('Старт')
-    excel_merger.check_lists(all_files)
+    # excel_merger.check_lists(all_files)
     print('Слияние файла: файл №1')
     excel_merger.merge_small_files(files_nn_122)
-    print('Слияние файла: файл №2')
-    excel_merger.merge_large_files()
+    # print('Слияние файла: файл №2')
+    # excel_merger.merge_large_files()
     excel_merger.count_files()
