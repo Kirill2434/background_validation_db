@@ -11,6 +11,7 @@ os.chdir('C:\source_data')
 pr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
 nds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 tc = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+nk = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 num_of_header = [7, 8]
 
 COL_NAME = [pr, nds, tc]
@@ -23,8 +24,10 @@ FILE_NAME = 'C:\generation_results\common_data_file.xlsx'
 FILE_NAME_99_122 = 'C:\generation_results\common_data_file_99.xlsx'
 FILE_NAME_shtraf_119_NK_RF = 'C:\generation_results\common_data_shtraf_119_NK_RF_file.csv'
 FILE_NAME_CHECK_REPORT = 'C:\generation_results\check_report_file.xlsx'
+files_source = glob.glob('C:\source_data\???122.xlsx')
+files_comp = glob.glob('C:\comparision_source_data\???122.xlsx')
 
-main_folder = PureWindowsPath('C:\source_data')
+main_folder = PureWindowsPath(r'C:\source_data')
 
 all_files = glob.glob('*.xlsx')
 files_nn_122 = glob.glob('???122.xlsx')
