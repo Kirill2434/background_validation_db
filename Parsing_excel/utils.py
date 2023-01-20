@@ -10,7 +10,8 @@ from pathlib import Path
 from pandas import ExcelWriter
 from tqdm import tqdm
 
-from source.config import COL_NAME, SHEET_NAME_122, FILE_NAME_CHECK_REPORT, main_folder, files_source
+from source.config import (COL_NAME, SHEET_NAME_122, FILE_NAME_CHECK_REPORT,
+                           main_folder, files_3_pages, file_paths, SHEET_NAME_119, nk, files_comp)
 from source.custom_exceptions import EmptyException
 
 
@@ -91,21 +92,6 @@ def check_lists(arg):
                          engine='openpyxl')
     df.to_excel(writer, sheet_name='Отчет по ошибкам')
     writer.close()
-    # for broken_file in incorrect_list_of_files:
-    #     wb = openpyxl.load_workbook(broken_file)
-    #     sheets = wb.sheetnames
-    #     sheets.title = 'Налог'
-    #     print(sheets[0])
-    #     if len(sheets) == 3:
-    #         sheets.title = correct_sheet[0]
-    #         wb.save(broken_file)
-    #     elif len(sheets) == 2:
-    #         sheets.title = correct_sheet[0]
-    #         wb.save(broken_file)
-    #     else:
-    #         sheets.title = correct_sheet[1]
-    #         wb.save(broken_file)
-
     print(f'Файлов с ошибкой: {len(incorrect_list_of_files_names)}\n список файлов: {incorrect_list_of_files_names}\n'
           f'Корректных файлов п.17: {len(correct_list_of_files_17)}\n список файлов: {correct_list_of_files_17}\n'
           f'Корректных файлов п.18: {len(correct_list_of_files_18)}\n список файлов: {correct_list_of_files_18}\n')
@@ -125,94 +111,118 @@ def comparison_columns_in_data():
     """Сравнение колонок с шаблоном в таблицах Excel. """
     mistake_dict = {}
     incorrect_dict_of_files = {}
-    for file in tqdm(files_source):
-        dict_of_inc_list_files = {}
+    incorrect_list_of_files = []
+    for path in file_paths:
+        if path == file_paths[1]:
+            for file in tqdm(path):
+                dict_of_inc_list_files = {}
+                df = pd.ExcelFile(file)
+                sheets = df.sheet_names
+                file_name = Path(df).name
+                df_excel_file = pd.read_excel(file,
+                                              header=6,
+                                              sheet_name=sheets[0],
+                                              dtype='str'
+                                              )
+                # преобразование колонок обрабатываемого датафрейма в список
+                column_to_list = df_excel_file.columns.tolist()
+                # словарь второго уровня, который содержит ключ - имя листа, значение - наименование колонок
+                incorrect_dict_of_files[SHEET_NAME_119] = column_to_list
+                # словарь первого уровня, который содержит ключ - имя файла, значение - словарь второго уровня
+                dict_of_inc_list_files[file_name] = incorrect_dict_of_files
+                # создаем цикл, который перебирает словарь первого уровня,
+                # по ключу - имени файла и значению - листы + наименования колонок
+                if dict_of_inc_list_files[file_name][SHEET_NAME_119] != nk:
+                    incorrect_list_of_files.append(file_name)
+                else:
+                    pass
+        else:
+            for file in tqdm(path):
+                dict_of_inc_list_files = {}
+                df = pd.ExcelFile(file)
+                sheets = df.sheet_names
+                file_name = Path(df).name
+                for sheet in range(len(sheets)):
+                    df_excel_file = pd.read_excel(file,
+                                                  header=7,
+                                                  sheet_name=sheet,
+                                                  dtype='str'
+                                                  )
+                    column_to_list = df_excel_file.columns.tolist()
+                    incorrect_dict_of_files[SHEET_NAME_122[sheet]] = column_to_list
+                    dict_of_inc_list_files[file_name] = incorrect_dict_of_files
+                # создаем цикл, который перебирает словарь первого уровня,
+                # по ключу - имени файла и значению - листы + наименования колонок
+                for file_name_key, sheet_name_value in dict_of_inc_list_files.items():
+                    incorrect_list_of_sheets = []
+                    for num_of_sheets in range(len(sheet_name_value)):
+                        if dict_of_inc_list_files[file_name][SHEET_NAME_122[num_of_sheets]] != COL_NAME[num_of_sheets]:
+                            incorrect_list_of_sheets.append(SHEET_NAME_122[num_of_sheets])
+                            mistake_dict[file_name_key] = incorrect_list_of_sheets
+                        else:
+                            pass
+    df_1_page = pd.DataFrame(incorrect_list_of_files)
+    df = pd.DataFrame.from_dict(mistake_dict,  orient='index')
+    df = df.transpose()
+    # если файл уже создан, то просто дописываем на существующий лист данные
+    if os.path.exists(FILE_NAME_CHECK_REPORT):
+        with ExcelWriter(FILE_NAME_CHECK_REPORT,
+                         engine='openpyxl',
+                         mode='a', if_sheet_exists='overlay'
+                         ) as writer:
+            df.to_excel(writer, sheet_name='Отчет о заголовках')
+            df_1_page.to_excel(writer, sheet_name='Отчет о заголовках', startrow=5)
+            print('Проверка выполнена, см. отчет!')
+
+    else:
+        with ExcelWriter(FILE_NAME_CHECK_REPORT,
+                         engine='openpyxl',
+                         mode='a' if os.path.exists(FILE_NAME_CHECK_REPORT) else 'w'
+                         ) as writer:
+            df.to_excel(writer, sheet_name='Отчет о заголовках')
+            df_1_page.to_excel(writer, sheet_name='Отчет о заголовках', startrow=5)
+            print('Проверка выполнена, см. отчет!')
+    return None
+
+
+def comparison_number_of_rows_in_data():
+    """Сравнение кол-ва строк в таблицах Excel. """
+    number_of_rows_dict = {}
+    number_of_comp_rows_dict = {}
+    list_of_result = []
+    for file in tqdm(files_3_pages):
+        name_of_files_key_dict = {}
         df = pd.ExcelFile(file)
         sheets = df.sheet_names
-        file_name = Path(df).name
+        file_name = str(Path(df).name)
         for sheet in range(len(sheets)):
             df_excel_file = pd.read_excel(file,
                                           header=7,
                                           sheet_name=sheet,
                                           dtype='str'
                                           )
-            column_to_list = df_excel_file.columns.tolist()
-            # словарь второго уровня, который содержит ключ - имя листа, значение - наименование колонок
-            incorrect_dict_of_files[SHEET_NAME_122[sheet]] = column_to_list
-            # словарь первого уровня, который содержит ключ - имя файла, значение - словарь второго уровня
-            dict_of_inc_list_files[file_name] = incorrect_dict_of_files
-        # создаем цикл, который перебирает словарь первого уровня,
-        # по ключу - имени файла и значению - листы + наименования колонок
-        for file_name_key, sheet_name_value in dict_of_inc_list_files.items():
-            incorrect_list_of_sheets = []
-            for num_of_sheets in range(len(sheet_name_value)):
-                if dict_of_inc_list_files[file_name][SHEET_NAME_122[num_of_sheets]] != COL_NAME[num_of_sheets]:
-                    incorrect_list_of_sheets.append(SHEET_NAME_122[num_of_sheets])
-                    mistake_dict[file_name_key] = incorrect_list_of_sheets
-                else:
-                    pass
-    df = pd.DataFrame.from_dict(mistake_dict,  orient='index')
-    df = df.transpose()
-    try:
-        with ExcelWriter(FILE_NAME_CHECK_REPORT,
-                         engine='openpyxl',
-                         mode='a' if os.path.exists(FILE_NAME_CHECK_REPORT) else 'w') as writer:
-            df.to_excel(writer, sheet_name='Отчет о заголовках')
-    except Exception:
-        pass
-    print('Проверка выполнена, см. отчет!')
-
-
-def comparison_number_of_rows_in_data():
-    """Сравнение кол-ва строк в таблицах Excel. """
-    incorrect_list_of_files = []
-    dict_of_files_name_and_sum = {}
-    dict_of_files_name_and_sum_2 = []
-
-    for file in tqdm(files_source):
-        df = pd.ExcelFile(file)
-        sheet = df.sheet_names
-        file_name = str(Path(df).name)
-        dict_of_files_name_and_sum[file_name] = {}
-        df_excel_file = pd.read_excel(file,
-                                      header=7,
-                                      sheet_name=sheet[0],
-                                      dtype='str'
-                                      )
-        l = df_excel_file.columns.tolist()
-        if l != COL_NAME.tolist():
-            incorrect_list_of_files.append(Path(df).name)
-        else:
-            pass
-    return incorrect_list_of_files
-    #     dict_of_files_name_and_sum[file_name] = {sheet[0]: file_obj.shape[0]}
-    #         for i in range(3):
-    #             dict_of_files_name_and_sum[file_name] = {i: file_obj.shape[0]}
-    #             # dict_of_files_name_and_sum[file_name][1] = file_obj.shape[0]
-    #             # dict_of_files_name_and_sum[file_name][2] = file_obj.shape[0]
-    #             # dict_of_files_name_and_sum[file_name] = [sheet[2], file_obj.shape[0]]
-    #             dict_of_files_name_and_sum.update()
-    # for file in tqdm(files_comp):
-    #     df = pd.ExcelFile(file)
-    #     sheet = df.sheet_names
-    #     file_name = str(Path(df).name)
-    #     dict_of_files_name_and_sum_2[file_name] = {}
-    #     file_obj = pd.read_excel(file,
-    #                              header=7,
-    #                              sheet_name=sheet[0],
-    #                              dtype='str'
-    #                              )
-    #     dict_of_files_name_and_sum_2[file_name] = {sheet[0]: file_obj.shape[0]}
-    # pprint(dict_of_files_name_and_sum_2)
-    # i = 0
-    # d = []
-    # for key, value in dict_of_files_name_and_sum_2:
-    #     for val in dict_of_files_name_and_sum.values():
-    #         if value['налог на прибыль'] != val['налог на прибыль']:
-    #             i += 1
-    #         else:
-    #             d.append(key)
-    return d
+            df = df_excel_file.shape[0]
+            number_of_rows_dict[SHEET_NAME_122[sheet]] = df
+            name_of_files_key_dict[file_name] = number_of_rows_dict
+        for fi in tqdm(files_comp):
+            name_of_comp_files = {}
+            df = pd.ExcelFile(fi)
+            sheets = df.sheet_names
+            file_name = str(Path(df).name)
+            for sheet in range(len(sheets)):
+                df_excel_file = pd.read_excel(file,
+                                              header=7,
+                                              sheet_name=sheet,
+                                              dtype='str'
+                                              )
+                df = df_excel_file.shape[0]
+                number_of_comp_rows_dict[SHEET_NAME_122[sheet]] = df
+                name_of_comp_files[file_name] = number_of_rows_dict
+            pprint(name_of_comp_files)
+            # if name_of_files_key_dict[file_name][SHEET_NAME_122] != name_of_comp_files[file_name][SHEET_NAME_122]:
+            #     list_of_result.append(file_name)
+    pprint(list_of_result)
+    return None
 
 
 def count_files():

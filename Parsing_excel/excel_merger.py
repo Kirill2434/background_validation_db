@@ -13,7 +13,7 @@ from source.config import (files_nn, files_nnn, FILE_NAME, FILE_NAME_shtraf_119_
 
 
 def merge_small_files():
-    """Процесс формиования DataFrame'ов путем слияния набора Excel файлов"""
+    """Процесс формиования DataFrame'ов путем слияния набора Excel файлов с 3-мя листами"""
     merge_files_nalog_list = []
     merge_files_nds_list = []
     merge_files_nds_import_tc_list = []
@@ -71,7 +71,7 @@ def merge_small_files():
 
 
 def merge_small_files_99():
-    """Процесс формиования DataFrame'ов путем слияния набора Excel файлов"""
+    """Процесс формиования DataFrame'ов путем слияния набора Excel файлов с 2-мя листами"""
     merge_files_nalog_list = []
     merge_files_nds_list = []
     try:
