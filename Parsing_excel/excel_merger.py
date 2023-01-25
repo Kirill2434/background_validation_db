@@ -1,15 +1,9 @@
-import glob
-import os
-from pathlib import Path
-from pprint import pprint
-
 import pandas as pd
-from pandas import ExcelWriter
 
 from tqdm import tqdm
 
 from source.config import (files_nn, files_nnn, FILE_NAME, FILE_NAME_shtraf_119_NK_RF,
-                           files_nnnn_119, files_nn_122, files_nnnn_122, FILE_NAME_99_122)
+                           files_nnnn_119, files_nn_122, files_nnnn_122, FILE_NAME_99_122, all_files)
 
 
 def merge_small_files():
@@ -19,7 +13,7 @@ def merge_small_files():
     merge_files_nds_import_tc_list = []
     try:
         # Слияние всех листов №1
-        for file in tqdm(files_nn_122, desc='Начало слияния листа (налог на прибыль)'):
+        for file in tqdm(all_files, desc='Начало слияния 1 листа'):
             sheet = pd.ExcelFile(files_nn_122[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
@@ -115,23 +109,20 @@ def merge_small_files_99():
 
 def merge_large_files():
     """Функция слияния крупных файлов в фомат csv. """
-    files_list = [files_nn, files_nnn, files_nnnn_119]
     merge_files_shtraf_119_NK_RF_list = []
-
     try:
-        for dirc in files_list:
-            for file in tqdm(dirc, desc='Начало слияния листа (штраф 119 НК РФ)'):
-                file_obj_1 = pd.read_excel(file,
-                                           header=6,
-                                           dtype='str'
-                                           )
-                file_obj_1[18].replace('\r\n', '\\n', regex=True)
-                file_obj_1.insert(18, 'Файл источник', file)
-                merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
+        for file in tqdm(all_files, desc='Начало слияния 1 листа'):
+            file_obj_1 = pd.read_excel(file,
+                                       header=13,
+                                       dtype='str'
+                                       )
+            # file_obj_1[18].replace('\r\n', '\\n', regex=True)
+            file_obj_1.insert(13, 'Файл источник', file)
+            merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
 
         merge_files_shtraf_119_NK_RF = pd.concat(merge_files_shtraf_119_NK_RF_list)
         # writer = pd.ExcelWriter(FILE_NAME_shtraf_119_NK_RF, engine='openpyxl')
-        # merge_files_shtraf_119_NK_RF.to_excel(writer, sheet_name='штраф 119 НК РФ', index=False)
+        # merge_files_shtraf_119_NK_RF.to_excel(writer, sheet_name='Ответы на запросы', index=False)
         # return writer.close()
         return merge_files_shtraf_119_NK_RF.to_csv(FILE_NAME_shtraf_119_NK_RF,
                                                    sep=',',
