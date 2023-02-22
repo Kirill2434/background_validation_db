@@ -66,33 +66,32 @@ def check_lists(arg):
     """Проверка листов в книге по образцу и вывод отчета в файл Excel. """
 
     incorrect_list_of_files_names = []
-    incorrect_list_of_files = []
-    correct_list_of_files_17 = []
-    correct_list_of_files_18 = []
-    correct_sheet = [['налог на прибыль', 'НДС', 'НДС импорт ТС'],
-                     ['штраф 119 НК РФ']]
+    incorrect_files = []
+    correct_files_1 = []
+    correct_files_2 = []
+    correct_sheet = ['Раздел 1', 'Раздел 2', 'Раздел 3']
 
     for file in tqdm(arg):
         xl = pd.ExcelFile(file)
         sheets = xl.sheet_names
 
         if sheets == correct_sheet[0]:
-            correct_list_of_files_17.append(Path(xl).name)
+            correct_files_1.append(Path(xl).name)
         elif sheets == correct_sheet[1]:
-            correct_list_of_files_18.append(Path(xl).name)
+            correct_files_2.append(Path(xl).name)
         else:
             incorrect_list_of_files_names.append(Path(xl).name)
-            incorrect_list_of_files.append(sheets)
+            incorrect_files.append(sheets)
     dict_of_errors = {'Имя файла': incorrect_list_of_files_names,
-                      'Наименование листов': incorrect_list_of_files}
+                      'Наименование листов': incorrect_files}
     df = pd.DataFrame(dict_of_errors)
     writer = ExcelWriter(FILE_NAME_CHECK_REPORT,
                          engine='openpyxl')
     df.to_excel(writer, sheet_name='Отчет по ошибкам')
     writer.close()
     print(f'Файлов с ошибкой: {len(incorrect_list_of_files_names)}\n список файлов: {incorrect_list_of_files_names}\n'
-          f'Корректных файлов п.17: {len(correct_list_of_files_17)}\n список файлов: {correct_list_of_files_17}\n'
-          f'Корректных файлов п.18: {len(correct_list_of_files_18)}\n список файлов: {correct_list_of_files_18}\n')
+          f'Корректных файлов: {len(correct_files_1)}\n список файлов: {correct_files_1}\n'
+          f'Корректных файлов: {len(correct_files_2)}\n список файлов: {correct_files_2}\n')
 
 
 def comparison_columns_in_data():
@@ -152,7 +151,8 @@ def comparison_columns_in_data():
     df_1_page = pd.DataFrame(incorrect_list_of_files)
     df = pd.DataFrame.from_dict(mistake_dict,  orient='index')
     df = df.transpose()
-    # если файл уже создан, то просто дописываем на существующий лист данные
+    # todo вывести запись в файл в отдельный метод в utils
+    # todo если файл уже создан, то просто дописываем на существующий лист данные
     if os.path.exists(FILE_NAME_CHECK_REPORT):
         with ExcelWriter(FILE_NAME_CHECK_REPORT,
                          engine='openpyxl',

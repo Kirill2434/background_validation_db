@@ -26,7 +26,7 @@ def merge_small_files():
         merge_files_nalog_na_pribol_merge = pd.concat(merge_files_nalog_list, ignore_index=False)
 
         # Слияние всех листов №2
-        for file in tqdm(files_nn_122, desc='Начало слияния листа (НДС)'):
+        for file in tqdm(files_nn_122, desc='Начало слияния 2 листа'):
             sheet = pd.ExcelFile(files_nn_122[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
@@ -39,7 +39,7 @@ def merge_small_files():
         merge_files_nds_merge = pd.concat(merge_files_nds_list)
 
         # Слияние всех листов №3
-        for file in tqdm(files_nn_122, desc='Начало слияния листа (НДС импорт ТС)'):
+        for file in tqdm(files_nn_122, desc='Начало слияния 3 листа'):
             sheet = pd.ExcelFile(files_nn_122[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
@@ -52,9 +52,9 @@ def merge_small_files():
         merge_files_nds_import_tc_merge = pd.concat(merge_files_nds_import_tc_list)
 
         # Распредление DataFrame'ов по листам Excel
-        MERGE_FILES = {'Налог на прибыль': merge_files_nalog_na_pribol_merge,
-                       'НДС': merge_files_nds_merge,
-                       'НДС импорт ТС': merge_files_nds_import_tc_merge}
+        MERGE_FILES = {'Лист 1': merge_files_nalog_na_pribol_merge,
+                       'Лист 2': merge_files_nds_merge,
+                       'Лист 3': merge_files_nds_import_tc_merge}
 
         writer = pd.ExcelWriter(FILE_NAME, engine='openpyxl')
         for sheet_name in MERGE_FILES.keys():
@@ -70,7 +70,7 @@ def merge_small_files_99():
     merge_files_nds_list = []
     try:
         # Слияние всех листов №1
-        for file in tqdm(files_nnnn_122, desc='Начало слияния листа (налог на прибыль)'):
+        for file in tqdm(files_nnnn_122, desc='Начало слияния 1 листа'):
             sheet = pd.ExcelFile(files_nnnn_122[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
@@ -83,7 +83,7 @@ def merge_small_files_99():
         merge_files_nalog_na_pribol_merge = pd.concat(merge_files_nalog_list, ignore_index=False)
 
         # Слияние всех листов №2
-        for file in tqdm(files_nnnn_122, desc='Начало слияния листа (НДС)'):
+        for file in tqdm(files_nnnn_122, desc='Начало слияния 2 листа'):
             sheet = pd.ExcelFile(files_nnnn_122[0])
             sheet = sheet.sheet_names
             file_obj = pd.read_excel(file,
@@ -96,8 +96,8 @@ def merge_small_files_99():
         merge_files_nds_merge = pd.concat(merge_files_nds_list)
 
         # Распредление DataFrame'ов по листам Excel
-        MERGE_FILES = {'Налог на прибыль': merge_files_nalog_na_pribol_merge,
-                       'НДС': merge_files_nds_merge}
+        MERGE_FILES = {'Лист 1': merge_files_nalog_na_pribol_merge,
+                       'Лист 2': merge_files_nds_merge}
 
         writer = pd.ExcelWriter(FILE_NAME_99_122, engine='openpyxl')
         for sheet_name in MERGE_FILES.keys():
@@ -107,6 +107,8 @@ def merge_small_files_99():
         print(f'Ошибка при выполнении слияния: {error}')
 
 
+# TODO 1. сделать проверку на ошибку ручного преноса строки в экселе
+# TODO 2. сделать дробление на более мелкие  и цельные фалйлы без разрывов иходников
 def merge_large_files():
     """Функция слияния крупных файлов в фомат csv. """
     merge_files_shtraf_119_NK_RF_list = []
