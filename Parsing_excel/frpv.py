@@ -64,34 +64,34 @@ def rewrite_sheet_name(files):
                                          )
                 file_obj.insert(26, 'Файл источник', file)
                 files_list.append(file_obj)
-                merge_file = pd.concat(files_list)
-                merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 1.xlsx',
-                                    sheet_name=correct_sheet[0],
-                                    index=False)
-            elif sheet == correct_sheet[1]:
-                file_obj = pd.read_excel(file,
-                                         header=5,
-                                         sheet_name=correct_sheet[1],
-                                         dtype='str'
-                                         )
-                file_obj.insert(13, 'Файл источник', file)
-                files_list.append(file_obj)
-                merge_file = pd.concat(files_list)
-                merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 2.xlsx',
-                                    sheet_name=correct_sheet[1],
-                                    index=False)
-            else:
-                file_obj = pd.read_excel(file,
-                                         header=5,
-                                         sheet_name=correct_sheet[2],
-                                         dtype='str'
-                                         )
-                file_obj.insert(11, 'Файл источник', file)
-                files_list.append(file_obj)
-                merge_file = pd.concat(files_list)
-                merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 3.xlsx',
-                                    sheet_name=correct_sheet[2],
-                                    index=False)
+    merge_file = pd.concat(files_list)
+    merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 1.xlsx',
+                        sheet_name=correct_sheet[0],
+                        index=False)
+            # elif sheet == correct_sheet[1]:
+            #     file_obj = pd.read_excel(file,
+            #                              header=5,
+            #                              sheet_name=correct_sheet[1],
+            #                              dtype='str'
+            #                              )
+            #     file_obj.insert(13, 'Файл источник', file)
+            #     files_list.append(file_obj)
+            #     merge_file = pd.concat(files_list)
+            #     merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 2.xlsx',
+            #                         sheet_name=correct_sheet[1],
+            #                         index=False)
+            # else:
+            #     file_obj = pd.read_excel(file,
+            #                              header=5,
+            #                              sheet_name=correct_sheet[2],
+            #                              dtype='str'
+            #                              )
+            #     file_obj.insert(11, 'Файл источник', file)
+            #     files_list.append(file_obj)
+            #     merge_file = pd.concat(files_list)
+            #     merge_file.to_excel(r'C:\generation_results\ФРПВ раздел 3.xlsx',
+            #                         sheet_name=correct_sheet[2],
+            #                         index=False)
     return None
 
 

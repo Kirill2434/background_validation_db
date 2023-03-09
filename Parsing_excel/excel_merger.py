@@ -118,7 +118,7 @@ def merge_large_files():
                                        header=13,
                                        dtype='str'
                                        )
-            # file_obj_1[18].replace('\r\n', '\\n', regex=True)
+            # file_obj_1[18].replace('\r\inn', '\\inn', regex=True)
             file_obj_1.insert(13, 'Файл источник', file)
             merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
 
