@@ -4,9 +4,9 @@ path_1 = r'C:\source_data\resurs.xlsx'
 path_2 = r'C:\source_data\main.xlsx'
 
 # Файл из которого берем данные
-df1 = pd.read_excel(path_1, header=8, sheet_name='Лист1', dtype=str)
+df1 = pd.read_excel(path_1, header=8, sheet_name='СВОД', dtype=str)
 # Основной файл в который добовляем данны
-df2 = pd.read_excel(path_2,  header=8, sheet_name='Лист1', dtype=str)
+df2 = pd.read_excel(path_2,  header=8, sheet_name='СВОД', dtype=str)
 
 unresolved_inn = []
 key_num = []
