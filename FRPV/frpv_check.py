@@ -1,13 +1,10 @@
-import os.path
 from pathlib import Path
 
 import pandas as pd
-from pandas import ExcelWriter
 from tqdm import tqdm
 
 from Parsing_excel.utils import record_to_excel
-from frpv_config import (FRPV_CHECK_REPORT, FRPV_CHECK_REPORT_N,
-                         SHEET_NAME_FRPV, COL_NAME_FRPV, all_frpv_files)
+from frpv_config import SHEET_NAME_FRPV, COL_NAME_FRPV, all_frpv_files
 
 
 def check_frpv_sheets(path, sheet_name):
@@ -30,21 +27,6 @@ def check_frpv_sheets(path, sheet_name):
                           'Наименование листов': list_of_sheets}
         df = pd.DataFrame.from_dict(dict_of_errors, orient='index')
         df = df.transpose()
-        file_number = 0
-        # while True:
-        #     if not os.path.exists(FRPV_CHECK_REPORT_N):
-        #         writer = ExcelWriter(FRPV_CHECK_REPORT,
-        #                              engine='openpyxl')
-        #         df.to_excel(writer, sheet_name='Отчет по ошибкам')
-        #         writer.close()
-        #     else:
-        #         file_number += 1
-        #         new_file_name = FRPV_CHECK_REPORT_N + '_' + str(file_number) + '.xlsx'
-        #         writer = ExcelWriter(new_file_name,
-        #                              engine='openpyxl')
-        #         df.to_excel(writer, sheet_name='Отчет по ошибкам в листах')
-        #         writer.close()
-        #     break
         record_to_excel(df, 'Отчет по ошибкам в листах')
     except Exception as error:
         print(f"Ошибка: {error}")
@@ -55,7 +37,6 @@ def check_columns_in_frpv(path):
     """Проверка колонок с шаблоном в таблицах Excel. """
     mistake_dict = {}
     incorrect_dict_of_files = {}
-    incorrect_list_of_files = []
     try:
         for file in tqdm(path):
             dict_of_inc_list_files = {}
@@ -100,7 +81,6 @@ def check_columns_in_frpv(path):
                         mistake_dict[file_name_key] = incorrect_list_of_sheets
                     else:
                         pass
-        # df_1_page = pd.DataFrame(incorrect_list_of_files)
         df = pd.DataFrame.from_dict(mistake_dict, orient='index')
         df = df.transpose()
         # записываем incorrect_list_of_files в excel отчет по ошибкам
@@ -110,5 +90,5 @@ def check_columns_in_frpv(path):
     return 'Провекра успешно завершена.'
 
 
-# print(check_frpv_sheets(all_frpv_files, SHEET_NAME_FRPV))
-print(check_columns_in_frpv(all_frpv_files))
+print(check_frpv_sheets(all_frpv_files, SHEET_NAME_FRPV))
+# print(check_columns_in_frpv(all_frpv_files))

@@ -31,8 +31,8 @@ df2.to_excel(r'C:\generation_results\fin.xlsx',
 # main_df = pd.read_excel(path_2,  header=8, sheet_name='Лист1', dtype=str)
 # unresolved_inn = []
 #
-# for file in files:
-#     df = pd.read_excel(file,
+# for file_dir in files:
+#     df = pd.read_excel(file_dir,
 #                        header=8,
 #                        sheet_name='Лист1',
 #                        dtype=str)
