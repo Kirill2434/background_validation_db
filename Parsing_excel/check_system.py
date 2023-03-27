@@ -18,7 +18,7 @@ def check_directory():
     directory_list = [r'C:\source_data', r'C:\generation_results']
 
     for directory in directory_list:
-        if os.path.exists(directory) == True:
+        if os.path.exists(directory):
             print(f'Папка {directory} в директории {os.getcwd()} - создана')
             continue
         else:
