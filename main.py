@@ -2,11 +2,11 @@ from Parsing_excel import utils, check_system, excel_merger
 from source.config import all_files
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # check_system.check_directory()
     # check_system.check_source_data()
     # check_system.check_generation_results()
-    print('Стар блока проверки\n')
+    # print('Стар блока проверки\n')
     # check_system.check_lists(all_files)
     # print('Проверка колонок\inn')
     # check_system.comparison_columns_in_data()

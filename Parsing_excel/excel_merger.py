@@ -1,9 +1,12 @@
+from datetime import date
+
 import pandas as pd
+from pyexcelerate import Workbook
 
 from tqdm import tqdm
 
-from source.config import (files_nn, files_nnn, FILE_NAME, FILE_NAME_shtraf_119_NK_RF,
-                           files_nnnn_119, files_nn_122, files_nnnn_122, FILE_NAME_99_122, all_files)
+from source.config import (files_nn, files_nnn, FILE_NAME, FILE_NAME_XLSX,
+                           files_nnnn_119, files_nn_122, files_nnnn_122, FILE_NAME_99_122, all_files, files_1_pages)
 
 
 def merge_small_files():
@@ -64,7 +67,7 @@ def merge_small_files():
         print(f'Ошибка при выполнении слияния: {error}')
 
 
-def merge_small_files_99():
+def merge_small_files_2():
     """Процесс формиования DataFrame'ов путем слияния набора Excel файлов с 2-мя листами"""
     merge_files_nalog_list = []
     merge_files_nds_list = []
@@ -107,30 +110,32 @@ def merge_small_files_99():
         print(f'Ошибка при выполнении слияния: {error}')
 
 
-# TODO 1. сделать проверку на ошибку ручного преноса строки в экселе
-# TODO 2. сделать дробление на более мелкие  и цельные фалйлы без разрывов иходников
 def merge_large_files():
-    """Функция слияния крупных файлов в фомат csv. """
-    merge_files_shtraf_119_NK_RF_list = []
+    """Функция слияния больших файлов. """
+    merge_files = []
     try:
-        for file in tqdm(all_files, desc='Начало слияния 1 листа'):
-            file_obj_1 = pd.read_excel(file,
-                                       header=13,
-                                       dtype='str'
-                                       )
-            # file_obj_1[18].replace('\r\inn', '\\inn', regex=True)
-            file_obj_1.insert(13, 'Файл источник', file)
-            merge_files_shtraf_119_NK_RF_list.append(file_obj_1)
+        for file in tqdm(files_1_pages, desc='Начало слияния'):
+            file_obj = pd.read_excel(file,
+                                     sheet_name='1',
+                                     dtype='str')
+            file_obj.insert(44, 'Файл источник', file)
+            merge_files.append(file_obj)
 
-        merge_files_shtraf_119_NK_RF = pd.concat(merge_files_shtraf_119_NK_RF_list)
-        # writer = pd.ExcelWriter(FILE_NAME_shtraf_119_NK_RF, engine='openpyxl')
-        # merge_files_shtraf_119_NK_RF.to_excel(writer, sheet_name='Ответы на запросы', index=False)
+        merge_files_concat = pd.concat(merge_files)
+        # merge_files_concat.to_excel(FILE_NAME_XLSX, sheet_name='Результат',
+        #                             index=False)
+        # return 'Слияние выполнено'
+        # writer = pd.ExcelWriter(FILE_NAME_XLSX, engine='openpyxl')
+        # merge_files_concat.to_excel(writer, sheet_name='Результат', index=False)
         # return writer.close()
-        return merge_files_shtraf_119_NK_RF.to_csv(FILE_NAME_shtraf_119_NK_RF,
-                                                   sep=',',
-                                                   index=False,
-                                                   encoding='cp1251',
-                                                   date_format='str'
-                                                   )
+        return merge_files_concat.to_csv(FILE_NAME_XLSX,
+                                         sep='|',
+                                         index=False,
+                                         encoding='cp1251',
+                                         date_format='str'
+                                         )
     except Exception as error:
         print(f'Ошибка при выполнении слияния: {error}')
+
+
+# print(merge_large_files())

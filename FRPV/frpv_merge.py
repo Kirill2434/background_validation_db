@@ -6,10 +6,10 @@ import pandas as pd
 from pandas import ExcelWriter
 from pprint import pprint
 
-from frpv_config.config import all_files, FRPV_CHECK_REPORT, FRPV_CHECK_REPORT_N, \
-                          SHEET_NAME_FRPV, COL_NAME_FRPV, main_folder
-from utils import record_to_excel
+from frpv_config import all_frpv_files, main_folder
+from Parsing_excel.utils import record_to_excel
 from tqdm import tqdm
+
 
 def merge_frpv_files(files):
     """Слияние необходимых листов в файлах Excel в которых содержится множество листов. """
@@ -36,7 +36,7 @@ def merge_frpv_files(files):
                                          sheet_name=correct_sheet[1],
                                          dtype='str'
                                          )
-                file_obj.insert(13, 'Файл источник', file)
+                file_obj.insert(17, 'Файл источник', file)
                 list_r_2.append(file_obj)
             elif sheet == correct_sheet[2]:
                 file_obj = pd.read_excel(file,
@@ -44,7 +44,7 @@ def merge_frpv_files(files):
                                          sheet_name=correct_sheet[2],
                                          dtype='str'
                                          )
-                file_obj.insert(11, 'Файл источник', file)
+                file_obj.insert(17, 'Файл источник', file)
                 list_r_3.append(file_obj)
 
     merge_file = pd.concat(list_r_1)
@@ -61,14 +61,15 @@ def merge_frpv_files(files):
                         index=False)
     return None
 
-
 def count_files():
     """Финальный подсчет обрабатываемых файлов в рабочей папке. """
     print(f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx\n"
           f"В папке {main_folder} хранится {len(list(glob.glob('*.xls')))} объектов в формате .xls\n"
-          f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsb')))} объектов в формате .xls")
+          f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsb')))} объектов в формате .xlsb")
 
+# что-бы запустить скрипт, нужно раскомментировать строку ниже, где прописано ключевое слово print
+# шаг 1, проверить папку с файлами
 # print(count_files())
-# print(check_frpv_sheets(all_files))
-# print(comparison_columns_in_frpv(all_files))
-  
+# строка с функцией merge_frpv_files() запускает слияние подготовленных фрпв файлов
+# шаг 4, сляине файлов
+print(merge_frpv_files(all_frpv_files))

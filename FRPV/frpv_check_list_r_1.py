@@ -32,7 +32,7 @@ def check_inn_format(file):
         wb.save(file)
     except Exception as error:
         print(error)
-    return '---------'
+    return incorrect_inn
 
 
 print(check_inn_format(r'C:\ФРПВ_1 раздел\source_data\0100.xlsx'))
