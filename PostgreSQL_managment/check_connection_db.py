@@ -29,8 +29,7 @@ load_dotenv()
 #             print('Курсор закрыт.')
 #             conn.close()
 #     return 'Все хорошо, соединение с базой установлено!'
-#
-#
+
 # print(connect_to_db())
 
 def connect_to_db():
