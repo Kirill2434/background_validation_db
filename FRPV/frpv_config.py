@@ -3,7 +3,7 @@ from pathlib import PureWindowsPath
 
 main_folder = PureWindowsPath(r'C:\source_data')
 
-R_1 = list(range(1, 29))
+R_1 = list(range(1, 27))
 R_2 = list(range(1, 18))
 R_3 = list(range(1, 18))
 
