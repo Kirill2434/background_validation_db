@@ -72,4 +72,4 @@ def count_files():
 # print(count_files())
 # строка с функцией merge_frpv_files() запускает слияние подготовленных фрпв файлов
 # шаг 4, сляине файлов
-print(merge_frpv_files(all_frpv_files))
+# print(merge_frpv_files(all_frpv_files))
