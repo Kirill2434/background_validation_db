@@ -87,4 +87,4 @@ def check_columns_in_frpv(path):
 # строка с check_columns_in_frpv() проверяет числовую шапку в xlsx файлах в папке source_data.
 # Кол-во колонок можно отредактировать в файле frpv_config. Переменные R_1, R_2, R_3
 # шаг 3, проверить шапку в файлах
-# print(check_columns_in_frpv(all_frpv_files))
+print(check_columns_in_frpv(all_frpv_files))
