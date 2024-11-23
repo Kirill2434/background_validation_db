@@ -61,6 +61,7 @@ def merge_frpv_files(files):
                         index=False)
     return None
 
+
 def count_files():
     """Финальный подсчет обрабатываемых файлов в рабочей папке. """
     print(f"В папке {main_folder} хранится {len(list(glob.glob('*.xlsx')))} объектов в формате .xlsx\n"
